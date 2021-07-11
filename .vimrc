@@ -1,65 +1,37 @@
 set nocompatible
 filetype off
-" set runtime path to include Vundle and initialisation
-set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/.vim_runtime/bundle/vundle.vim
 call vundle#begin()
-Bundle 'scrooloose/nerdtree'
-Bundle 'Valloric/YouCompleteMe'
-call vundle#end()
-filetype plugin indent on
+Plugin 'VundleVim/Vundle.vim'
+set runtimepath+=~/.vim_runtime
+source ~/.vim_runtime/vimrcs/basic.vim
+source ~/.vim_runtime/vimrcs/filetypes.vim
+source ~/.vim_runtime/vimrcs/plugins_config.vim
+source ~/.vim_runtime/vimrcs/extended.vim
 
-syntax on
-"source /usr/local/lib/python2.7/site-packages/powerline
-set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/
-set laststatus=2
-set showtabline=1
-set noshowmode
-" Quick ESC
-imap jk <ESC>
-map <C-n> :NERDTreeToggle<CR>
-imap <C-Space> <C-N>
-set guifont=Menlo\ for\ Powerline:h14
-let g:Powerline_symbols = 'fancy'
-set encoding=utf-8
-set t_Co=256
-set fillchars+=stl:\ ,stlnc:\
-set term=xterm-256color
-set termencoding=utf-8
-set smarttab
+try
+source ~/.vim_runtime/my_configs.vim
+catch
+endtry
+colorscheme gruvbox 
 
-nmap <silent> ,/ :nohlsearch<CR>
-set autoindent
-set smartindent
-nnoremap ; :
 
-set hidden 
-function! Tab_Or_Complete()
-	  if col('.')>1 && strpart( getline('.'), col('.')-2, 3 ) =~ '^\w'
-		      return "\<C-N>"
-	  else
-			  return "\<Tab>"
-	  endif
-endfunction
-:inoremap <Tab> <C-R>=Tab_Or_Complete()<CR>
-:set dictionary="/usr/dict/words"
-set guioptions-=T " Removes top toolbar
-set guioptions-=r " Removes right hand scroll bar
-set go-=L " Removes left hand scroll bar
-set linespace=15
-set tabstop=4
-set shiftwidth=4
-set showmode
+Plugin 'ambv/black'
+" let g:black_virtualenv='~/.vim_black'
+let g:black_linelength = 78
+autocmd BufWritePre *.py execute ":Black"
 set number
-set hlsearch
-set numberwidth=5
-
-highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
-
-
-
-
-
+if exists('$TMUX')
+    let &t_SI = "\ePtmux;\e\e[5 q\e\\"
+    let &t_EI = "\ePtmux;\e\e[2 q\e\\"
+else
+    " solid underscore
+    let &t_SI = "\e[5 q"
+    " solid block
+    let &t_EI = "\e[2 q"
+endif
+" 1 or 0 -> blinking block
+" 3 -> blinking underscore
+" Recent versions of xterm (282 or above) also support
+" 5 -> blinking vertical bar
+" 6 -> solid vertical bar
